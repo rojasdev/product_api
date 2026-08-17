@@ -1,0 +1,8 @@
+Creating your API endpoint
+1. Open your hosting file folder (public_html, or htdocs,  or www depends on the hosting)
+2. Create a folder with name using your group number e.g. group1
+3. Upload the files to your folder.
+4. Open config.php and update the credentials coming from your own database settings.
+5. Open phpmyadmin and create the table as reflected in the schema.sql
+6. To test your setup, open www.postman.com, in the url bar, use GET method, and the url to your API endpoint e.g. site.sample.com/group1
+7. Click Send and expect a list of items from your table. 
