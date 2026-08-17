@@ -3,14 +3,14 @@
  * index.php
  * Simple REST API for the `products` resource.
  *
- * Routes (assuming this file is served at /api/index.php,
- * or rewritten to /api/ via .htaccess):
+ * Routing uses a query string (?id=) instead of path segments, so it
+ * works on any PHP host without mod_rewrite / .htaccess / AllowOverride.
  *
- *   GET    /api/products            -> list products (supports ?category=&is_active=)
- *   GET    /api/products/?id={id}       -> get one product
- *   POST   /api/products            -> create a product   (JSON body)
- *   PUT    /api/products/?id={id}       -> update a product   (JSON body, partial allowed)
- *   DELETE /api/products/?id={id}       -> delete a product
+ *   GET    /index.php               -> list products (supports &category=&is_active=)
+ *   GET    /index.php?id={id}       -> get one product
+ *   POST   /index.php               -> create a product   (JSON body)
+ *   PUT    /index.php?id={id}       -> update a product   (JSON body, partial allowed)
+ *   DELETE /index.php?id={id}       -> delete a product
  */
 
 declare(strict_types=1);
@@ -70,18 +70,9 @@ function validateCreate(array $data): array
 }
 
 // --------------------------------------------------------------
-// Routing: parse path like /products or /products/5
+// Routing: id comes from the query string, e.g. index.php?id=5
 // --------------------------------------------------------------
-$path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path   = trim(str_replace(dirname($_SERVER['SCRIPT_NAME']), '', $path), '/');
-$parts  = $path === '' ? [] : explode('/', $path);
-
-// Expect first segment to be "products"
-if (($parts[0] ?? '') !== 'products') {
-    sendJson(['error' => 'Not found. Try /products or /products/{id}'], 404);
-}
-
-$id     = isset($parts[1]) ? (int) $parts[1] : null;
+$id     = isset($_GET['id']) && $_GET['id'] !== '' ? (int) $_GET['id'] : null;
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
